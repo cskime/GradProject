@@ -5,58 +5,52 @@
 #include <std_msgs/Bool.h>
 #include <ros/ros.h>
 
-class MSGs {
-public:
-
-    MSGs();
-
-    /* Variables */
-    float imuHeading;
-    float waypointY;
-    bool isParkingAvailable;
-    bool isParkingArea;
-    bool endParking;
-    bool pReverse;
-    bool endReverse;
-
-    int testGear, testSpeed, testSteer;
-
+class ParkingMessagePool {
+    
+    /* common */
     ros::NodeHandle node_;
-
-    /* Publisher */
-    ros::Publisher pub_gear;    // 전진(D), 후진(R), 정지(P)
-    ros::Publisher pub_speed;   // speed = 150
-    ros::Publisher pub_steer;   // steering calculated with wayX
-
-    /* Subscriber */
-    ros::Subscriber sub_imuHeading;     // IMU Heading
-    ros::Subscriber sub_waypointY;      // wayX
-    ros::Subscriber sub_parking;        // isParkingAvailable(주차공간)
-    ros::Subscriber sub_parkingArea;    // isParkingArea(표지판)
-    //ros::Subscriber sub_endParking;     // 주차완료
-    //ros::Subscriber sub_pReverse;       // 후진
-    //ros::Subscriber sub_endReverse;     // 후진 완료 후 전진
-
-    ros::Subscriber sub_testGear;
-    ros::Subscriber sub_testSpeed;
-    ros::Subscriber sub_testSteer;
-
-    /* Publish msgs */
-    std_msgs::Int32 gear;
-    std_msgs::Int32 speed;
-    std_msgs::Float32 steer;
+    
+    /* publish */
+    // Messages
+    std_msgs::Int32 gear;               // Arduino로 보낼 기어값
+    std_msgs::Int32 velocity;           // Arduino로 보낼 속도값
+    std_mesgs::Float32 steer;           // Arduino로 보낼 조향각
+    
+    // Publisher
+    ros::Publisher pub_gear;        // 전진(D), 후진(R), 정지(P)
+    ros::Publisher pub_velocity;    // speed = 150
+    ros::Publisher pub_steer;       // steering calculated with wayX
+    
+    /* subscribe */
+    // Messages
+    std_msgs::Float32 heading;          // IMU heading
+    std_msgs::Float32 waypointY;        // waypoint
+    std_msgs::Bool isAvailableFront;    // 전면주차공간 찾음 & 주차 가능
+    std_msgs::Bool isAvailableRear;     // 후면주차공간 찾음 & 주차 가능
+    std_msgs::Bool isComplete;          // 주차 완료
+    std_msgs::Bool isReturnRail;        // 다시 주행하기 위해 돌아감
+    std_msgs::Bool isReturned;          // 원래 주행로 복귀함
+    
+    // Subscriber
+    ros::Subscriber sub_heading;
+    ros::Subscriber sub_waypointY;
+    ros::Subscriber sub_isAvailableFront;
+    ros::Subscriber sub_isAvailableRear;
+    ros::Subscriber sub_isComplete;
+    ros::Subscriber sub_isReturnRail;
+    ros::Subscriber sub_isReturned;
+    
+public:
+    /* Publisher Method */
+    void publish(int gear, int velocity, float steer);
 
     /* Subscriber Callback */
     void subIMUCallback(const std_msgs::Float32 &subIMUMsgs);
     void subWaypointYCallback(const std_msgs::Float32 &subWaypointYMsgs);
-    void subParkingCallback(const std_msgs::Bool &subParkingMsgs);
-    void subParkingAreaCallback(const std_msgs::Bool &subParkingAreaMsgs);
-    //void subEndParkingCallback(const std_msgs::Bool &subEndParkingMsgs);
-    //void subReverseCallback(const std_msgs::Bool &subReverseMsgs);
-    //void subEndReverseCallback(const std_msgs::Bool &subEndReverseMsgs);
-
-    void subTestGearCallback(const std_msgs::Int32 &subTestGearMsg);
-    void subTestSpeedCallback(const std_msgs::Int32 &subTestSpeedMsg);
-    void subTestSteerCallback(const std_msgs::Int32 &subTestSteerMsg);
+    void subParkingFrontCallback(const std_msgs::Bool &subParkingMsgs);
+    void subParkingRearCallback(const std_msgs::Bool &subParkingAreaMsgs);
+    void subCompleteCallback(const std_msgs::Bool &subEndParkingMsgs);
+    void subReturnToRailCallback(const std_msgs::Bool &subReverseMsgs);
+    void subReturnedCallback(const std_msgs::Bool &subEndReverseMsgs);
 
 };
