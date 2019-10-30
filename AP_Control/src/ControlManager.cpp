@@ -1,9 +1,92 @@
-#include "AP_Control.h"
+#include "ControlManager.h"
 
 using namespace std;
 
-short CONTROL::steer_LaneControl(float pixel_y)
+ParkingController::ParkingController()
 {
+    velocity = 150;
+    state = SEARCH;
+}
+
+void ParkingController::parking() {
+    switch (state) {
+        case SEARCH:
+            searchArea();
+            break;
+        case PARKING_FRONT:
+            parkingFront();
+            break;
+        case PARKING_REAR:
+            parkingRear();
+            break;
+        case COMPLETE:
+            complete();
+            break;
+        case RETURN:
+            returnRail();
+            break;
+    }
+}
+
+void ParkingController::searchArea() {
+    float steer = calculateSteer();
+    if (steerQueue.isFull())
+        steerQueue.Dequeue();
+    else
+        steerQueue.Enqueue(steer);
+    message.publish(0, velocity, steer);
+    
+    if (message.isAvailableFront.data) {
+        changeState(PARKING_FRONT);
+    }
+}
+
+void ParkingController::parkingFront() {
+    timer[PARKING_FRONT].counting(70);  // 7sec moving
+    
+    if (!timer[PARKING_FRONT].isCounted) {
+        float steer = 45;
+        if (steerQueue.isFull())
+            steerQueue.Dequeue();
+        else
+            steerQueue.Enqueue(steer);
+        message.publish(0, velocity - 20, steer);
+    } else {
+        timer[PARKING_FRONT].close();
+        changeState(COMPLETE);
+    }
+}
+
+void ParkingController::parkingRear() {
+//    messagePool->publish(0, velocity, );
+}
+
+void ParkingController::complete() {
+    timer[COMPLETE].counting(30);   // 3sec wait after complete
+    
+    if (!timer[COMPLETE].isCounted) {
+        message.publish(0, 0, 0);
+    } else {
+        timer[COMPLETE].close();
+        changeState(RETURN);
+    }
+}
+
+void ParkingController::returnRail() {
+    if (!steerQueue.isEmpty()) {
+        float steer = steerQueue.Pop();
+        message.publish(1, velocity - 20, steer);
+    } else {
+        changeState(SEARCH);
+    }
+}
+
+void ParkingController::changeState(ParkingStates state) {
+    this->state = state;
+}
+
+short ParkingController::calculateSteer() {
+    float pixel_y = message.waypointY.data;
     float k = 0.35;    // gain k = 0.19 =: 22.5
     int x_th = -10;   // 치우침 보정
     short steer = k*(pixel_y+x_th-320);     //atan(-p_y/p_x) * 180/3.14 * 2000/22.5;
@@ -15,7 +98,8 @@ short CONTROL::steer_LaneControl(float pixel_y)
     return steer;
 }
 
-SteerList::SteerList(int size)
+
+SteerQueue::SteerQueue(int size)
 {
     this->size = size;
     list = new double[size];
@@ -26,12 +110,12 @@ SteerList::SteerList(int size)
     head = tail = 0;
 }
 
-SteerList::~SteerList()
+SteerQueue::~SteerQueue()
 {
     delete[] list;
 }
 
-void SteerList::Enqueue(double num)
+void SteerQueue::Enqueue(double num)
 {
     if(isFull())
     {
@@ -44,7 +128,7 @@ void SteerList::Enqueue(double num)
     }
 }
 
-void SteerList::Dequeue()
+void SteerQueue::Dequeue()
 {
     if (isEmpty())
     {
@@ -57,7 +141,7 @@ void SteerList::Dequeue()
     }
 }
 
-double SteerList::Pop()
+double SteerQueue::Pop()
 {
     if (isEmpty())
     {
@@ -67,27 +151,27 @@ double SteerList::Pop()
 
     else
     {
-        if (tail < 1) 
+        if (tail < 1)
             tail += size;
         return list[--tail];
     }
 }
 
 // is queue empty
-bool SteerList::isEmpty()
+bool SteerQueue::isEmpty()
 {
-    if ((head == tail)) return true;
+    if (head == tail) return true;
     else return false;
 }
 
 // is queue full
-bool SteerList::isFull()
+bool SteerQueue::isFull()
 {
     if (head == ((tail + 1) % size)) return true;
     else return false;
 }
 
-void SteerList::show()
+void SteerQueue::show()
 {
     //cout << "Head : " << head << ", Head Value : " << list[head] << endl;
     //cout << "Tail : " << tail << ", Tail Value : " << list[tail] << endl;

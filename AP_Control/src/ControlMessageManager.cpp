@@ -1,8 +1,8 @@
-#include "AP_Message.h"
+#include "ControlMessageManager.h"
 
 using namespace std;
 
-ParkingMessagePool::ParkingMessagePool()
+ControlMessageManager::ControlMessageManager()
 {
     /* initialize */
     // Publisher
@@ -21,43 +21,43 @@ ParkingMessagePool::ParkingMessagePool()
 }
 
 /* Subscriber Callback */
-void ParkingMessagePool::subIMUCallback(const std_msgs::Float32 &subIMUMsgs)
+void ControlMessageManager::subIMUCallback(const std_msgs::Float32 &subIMUMsgs)
 {
     heading = subIMUMsgs;
 }
 
-void ParkingMessagePool::subWaypointYCallback(const std_msgs::Float32 &subWaypointYMsgs)
+void ControlMessageManager::subWaypointYCallback(const std_msgs::Float32 &subWaypointYMsgs)
 {
     waypointY = subWaypointYMsgs;
 }
 
-void ParkingMessagePool::subParkingFrontCallback(const std_msgs::Bool &subParkingFrontMsgs)
+void ControlMessageManager::subParkingFrontCallback(const std_msgs::Bool &subParkingFrontMsgs)
 {
     isAvailableFront = subParkingFrontMsgs;
 }
 
-void ParkingMessagePool::subParkingRearCallback(const std_msgs::Bool &subParkingRearMsgs)
+void ControlMessageManager::subParkingRearCallback(const std_msgs::Bool &subParkingRearMsgs)
 {
     isAvailableRear = subParkingRearMsgs;
 }
 
-void ParkingMessagePool::subCompleteCallback(const std_msgs::Bool &subCompleteCallbackMsgs)
+void ControlMessageManager::subCompleteCallback(const std_msgs::Bool &subCompleteCallbackMsgs)
 {
     isComplete = subCompleteCallbackMsgs;
 }
 
-void ParkingMessagePool::subReturnRailCallback(const std_msgs::Bool &subReturnRailMsgs)
+void ControlMessageManager::subReturnRailCallback(const std_msgs::Bool &subReturnRailMsgs)
 {
     isReturnRail = subReturnRailMsgs;
 }
 
-void ParkingMessagePool::subReturnedCallback(const std_msgs::Bool &subReturnedMsgs)
+void ControlMessageManager::subReturnedCallback(const std_msgs::Bool &subReturnedMsgs)
 {
     isReturned = subReturnedMsgs;
 }
 
 /* Publisher */
-void ParkingMessagePool::publish(int gear, int velocity, float steer) {
+void ControlMessageManager::publish(int gear, int velocity, float steer) {
     this.gear.data = gear;
     this.velocity.data = velocity;
     this.steer.data = steer;
