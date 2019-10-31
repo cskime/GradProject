@@ -1,10 +1,6 @@
 #include "AP_IMU.h"
-#include <serial/serial.h>
-#include <iostream>
 
-serial::Serial serialPort;
-
-bool validimu()
+bool IMU::isValid()
 {
     if(serialPort.isOpen())
     {
@@ -15,9 +11,9 @@ bool validimu()
         return false;
 }
 
-bool connectIMU(std::string port_name, int baudrate)
+bool IMU::connect(std::string port_name, int baudrate)
 {
-    if(validimu())
+    if(isValid())
         return false;
     try
     {
@@ -40,29 +36,34 @@ bool connectIMU(std::string port_name, int baudrate)
 
 IMU::IMU(std::string port_name, int baudrate)
 {
-    connectIMU(port_name, baudrate);
-    std::cout << "do?" << std::endl;
-    IMU_flag = 0;
-    IMUProcessing();
+    if (connect(port_name, baudrate))
+    {
+        flag = 0;
+        initAngle = 0;
+        heading = 0;
+    }
 }
 
-void IMU:: IMUProcessing(void)    //라이다 알고리즘
-{
-    std::string str2;
+float IMU::calculateHeading() {
+    std::string headingStr;
     if(serialPort.available())
     {
-        serialPort.readline(IMUresult);
-        std::cout<<"IMU: "<< IMUresult << std::endl;
-        IMUresult.erase(0,18);
-        str2 = IMUresult.substr(0,9);
-        IMUresult.erase();
+        serialPort.readline(response);
+        std::cout<<"IMU: "<< response << std::endl;
+        response.erase(0,18);
+        headingStr = response.substr(0,9);
+        response.erase();
 
-        if(IMU_flag != 2)
+        if(flag != 2)
         {
-            init_angle_z = std::atof(str2.c_str());
-            IMU_flag++;
+            initAngle = std::atof(headingStr.c_str());
+            flag++;
         }
         else
-            angle_z = std::atof(str2.c_str())- init_angle_z;
+            heading = std::atof(headingStr.c_str()) - initAngle;
     }
+    else {
+        heading = 0;
+    }
+    return heading;
 }
