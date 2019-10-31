@@ -8,7 +8,7 @@
 ## Class
 - Control, Camera, IMU의 각 main에서 ros operation : init, ok loop, pub/sub message 등 ros를 class에서 빼야함
 - 각 class는 각자의 역할에 맞는 data로만 구성되도록
-<img src="./assets/sketch.jpeg" width="70%;" />
+<img src="./assets/class design.png" width="70%;" />
 
 ## State
 <img src="./assets/state.jpeg" width="70%;" />
