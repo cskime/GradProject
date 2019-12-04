@@ -25,29 +25,6 @@ using namespace cv;
 using namespace std;
 using namespace ros;
 
-
-class SC_Timer
-{
-    int sec_start;
-    int sec_flag;
-    int sec_count;
-    int doing_t;
-
-    ros::NodeHandle node_;
-    ros::Timer timer;
-
-    // MSG.Cross : find stopline(true/false)
-
-public:
-    SC_Timer();
-    void timer_callback(const ros::TimerEvent& );
-    void set_timer(int start_t);
-    void counting(void);
-    void exit(void);
-    bool isCounted;
-
-};
-
 // Parking
 class CCamera
 {
