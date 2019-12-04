@@ -2,8 +2,9 @@
 #include <serial/serial.h>
 
 class IMU {
+private:
     serial::Serial serialPort;
-    std::string response;      //IMU 데이터값
+    
     int flag;
     float initAngle;
     float heading;

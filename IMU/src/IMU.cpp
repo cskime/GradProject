@@ -1,4 +1,4 @@
-#include "AP_IMU.h"
+#include "IMU.h"
 
 bool IMU::isValid()
 {
@@ -45,11 +45,13 @@ IMU::IMU(std::string port_name, int baudrate)
 }
 
 float IMU::calculateHeading() {
-    std::string headingStr;
     if(serialPort.available())
     {
+        std::string headingStr;
+        std::string response;
+        
         serialPort.readline(response);
-        std::cout<<"IMU: "<< response << std::endl;
+//        std::cout<<"IMU: "<< response << std::endl;
         response.erase(0,18);
         headingStr = response.substr(0,9);
         response.erase();
