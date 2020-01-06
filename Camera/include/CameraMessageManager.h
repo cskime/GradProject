@@ -29,7 +29,7 @@ private:
     
     cv_bridge::CvImagePtr rawImagePtr, rawImagePtr1, rawImagePtr2;
     cv_bridge::CvImagePtr pubImagePtr, pubImagePtr1, pubImagePtr2;
-    cv::Mat rawImage, rawImagefront, rawImageside;
+    cv::Mat rawImagefront, rawImageside;
     
     void subFrontImageCallback(const sensor_msgs::Image& subImgMsgs);
     void subSideImageCallback(const sensor_msgs::Image& subImgMsgs);
@@ -49,6 +49,7 @@ public:
     CameraMessageManager();
     void publishWay(float waypointX);
     void publishSign(float findSign);
-    void publishAvail(float available);
+    void publishParkingAvailable(float available);
+    Mat getFrontImage();
+    Mat getSideImage();
 };
-

@@ -38,8 +38,9 @@ add_executable(
 ${PROJECT_NAME}
 ${project_HEADERS}
 src/main.cpp 
-src/AP_Control.cpp
-src/AP_Message.cpp
+src/Common.cpp
+src/Controller.cpp
+src/ControllerMessageManager.cpp
 )
 
 target_link_libraries(${PROJECT_NAME}

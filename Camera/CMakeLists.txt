@@ -39,7 +39,10 @@ add_executable(
 ${PROJECT_NAME}
 ${project_HEADERS}
 src/main.cpp 
-src/AP_Camera.cpp
+src/CameraMessageManager.cpp
+src/SideCamera.cpp
+src/FrontCamera.cpp
+src/CameraController.cpp
 )
 
 target_link_libraries(${PROJECT_NAME}

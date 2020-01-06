@@ -38,7 +38,7 @@ add_executable(
 ${PROJECT_NAME}
 ${project_HEADERS}
 src/main.cpp 
-src/AP_IMU.cpp
+src/IMU.cpp
 )
 
 target_link_libraries(${PROJECT_NAME}
