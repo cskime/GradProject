@@ -8,11 +8,10 @@
 
 #include "FrontCamera.h"
 
-FrontCamera::FrontCamera() {
+FrontCamera::FrontCamera(Mat rawImg) {
     // Flags
     wayPoint = Point2f(0.0f, 0.0f);
-    msgManager = new CameraMessageManager();
-    rawImage = msgManager->getFrontImage();
+    this->rawImage = rawImg;
 }
 
 Mat FrontCamera::reverseBinary(Mat binaryImage) {
@@ -28,7 +27,7 @@ Mat FrontCamera::reverseBinary(Mat binaryImage) {
     return reversed;
 }
 
-void FrontCamera::calculateWayPoint() {
+float FrontCamera::calculateWayPoint() {
     Mat grayImage, binaryImage;
     cvtColor(rawImage, grayImage, CV_BGR2GRAY);
     threshold(grayImage, binaryImage, 0, 255, CV_THRESH_OTSU);
@@ -83,5 +82,5 @@ void FrontCamera::calculateWayPoint() {
         }
     }
 
-    msgManager->publishWay(wayPoint.x);
+    return wayPoint.x;
 }

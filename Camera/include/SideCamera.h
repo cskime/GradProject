@@ -17,7 +17,6 @@
 
 class SideCamera {
     Mat rawImg;
-    CameraMessageManager *msgManager;
     
     /* Find Parking Sign */
     
@@ -48,11 +47,11 @@ class SideCamera {
     Mat getWarpedImageFromImage(Mat edgeImage, Size warpSize, vector<Point2d> intersections);
     
 public:
-    SideCamera();
+    SideCamera(Mat rawImg);
     ~SideCamera() {
         delete msgManager;
     }
     
-    void findParkingSign();     // Find Parking Sign
-    void findParkingArea();     // Find Parking Area
+    bool findParkingSign();     // Find Parking Sign
+    bool findParkingArea();     // Find Parking Area
 };

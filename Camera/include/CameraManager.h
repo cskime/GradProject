@@ -28,6 +28,7 @@ using namespace ros;
 
 class CameraManager {
 private:
+    CameraMessageManager *msgManager;
     SideCamera *sideCamera;
     FrontCamera *frontCamera;
     

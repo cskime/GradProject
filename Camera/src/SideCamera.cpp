@@ -8,11 +8,8 @@
 
 #include "SideCamera.h"
 
-SideCamera::SideCamera() {
-    msgManager = new CameraMessageManager();
-    rawImg = msgManager->getSideImage();
-    
-    // Flags
+SideCamera::SideCamera(Mat rawImg) {
+    this->rawImg = rawImg;
     isFindSign = false;
     isAvailable = false;
 }
@@ -106,7 +103,7 @@ int SideCamera::findMaxSignAreaForWhite(Mat binaryWhite) {
     return maxW;
 }
 
-void SideCamera::findParkingSign() {
+bool SideCamera::findParkingSign() {
     // Blue in Sign
     Mat binaryBlue = convertImageInRange(rawImg, Scalar(108, 58, 30), Scalar(123, 216, 150));
     int left, top, width, height;
@@ -122,8 +119,7 @@ void SideCamera::findParkingSign() {
         rectangle(rawImg, Point(left, top), Point(left + width, top + height), Scalar(255, 0, 0), 2);
     }
     
-    imshow("Sign", rawImg);
-    msgManager->publishSign(isFindSign);
+    return isFindSign;
 }
 
 /* Find Parking Area, check available */
@@ -383,7 +379,7 @@ void SideCamera::findParkingArea() {
     vector<Point2d> intersections = getVerticesFromHoughLines(averageHoughLines);
     
     // edge counting using warp image
-    bool canParked = canParkedWithinArea(edgeImg, intersections);
+    bool canParking = canParkedWithinArea(edgeImg, intersections);
     
-    msgManager->publishParkingAvailable(canParked);
+    return canParking;
 }

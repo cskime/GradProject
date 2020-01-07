@@ -17,16 +17,15 @@
 
 class FrontCamera {
     Mat rawImage;
-    CameraMessageManager *msgManager;
     
     Point2f wayPoint;
     Mat reverseBinary(Mat binaryImage);
     
 public:
-    FrontCamera();
+    FrontCamera(Mat rawImg);
     ~FrontCamera() {
         delete msgManager;
     }
     
-    void calculateWayPoint();
+    float calculateWayPoint();
 };

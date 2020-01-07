@@ -1,33 +1,22 @@
-#include "CameraController.h"
+#include "CameraManager.h"
 
 CameraManager::CameraManager()
 {
-    sideCamera = new SideCamera();
-    frontCamera = new FrontCamera();
+    msgManager = new CameraMessageManager();
+    Mat sideImage = msgManager->getSideImage();
+    Mat frontImage = msgManager->getFrontImage();
+    
+    sideCamera = new SideCamera(sideImage);
+    frontCamera = new FrontCamera(frontImage);
 }
 
 void CameraManager::process() {
-    frontCamera->calculateWayPoint();
-    sideCamera->findParkingArea();
-    sideCamera->findParkingSign();
-}
-
-void CameraController::Processing()
-{
-    m_front = rawImagefront;
-    m_side = rawImageside;
-
-    frontProcessing();
-    sideProcessing();
-}
-
-void CameraManager::sideProcessing()
-{
-    findSign();
-    findParkingArea();
-}
-
-void CameraManager::findSign()
-{
-    // Migrated
+    float wayPointX = frontCamera->calculateWayPoint();
+    msgManager->publishWay(wayPointX);
+    
+    bool canParking = sideCamera->findParkingArea();
+    msgManager->publishSign(isFindSign);
+    
+    bool isFindSign = sideCamera->findParkingSign();
+    msgManager->publishParkingAvailable(canParking);
 }

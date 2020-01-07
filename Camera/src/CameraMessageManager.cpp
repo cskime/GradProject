@@ -5,7 +5,7 @@ CameraMessageManager::CameraMessageManager() {
     subFrontImage = nh.subscribe("/camera1/usb_cam1/image_raw", 1, &CameraMessageManager::subFrontImageCallback, this);
     subSideImage = nh.subscribe("/camera2/usb_cam2/image_raw", 1, &CameraMessageManager::subSideImageCallback, this);
     
-    pub_waypointY = nh.advertise<std_msgs::Float32>("/Camera/wayPointY", 1);
+    pub_waypointX = nh.advertise<std_msgs::Float32>("/Camera/wayPointX", 1);
     pub_isFindSign = nh.advertise<std_msgs::Bool>("/Camera/isFindSign", 1);
     pub_isAvailable = nh.advertise<std_msgs::Bool>("/Camera/isAvailable", 1);'
 }
