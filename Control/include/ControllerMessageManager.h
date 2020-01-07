@@ -5,8 +5,7 @@
 #include <std_msgs/Bool.h>
 
 class ControllerMessageManager {
-    
-    /* common */
+private:    /* common */
     ros::NodeHandle node_;
     
     /* publish */
@@ -16,32 +15,26 @@ class ControllerMessageManager {
     
     /* subscribe */
     ros::Subscriber sub_heading;
-    ros::Subscriber sub_waypointY;
-    ros::Subscriber sub_isAvailableFront;
-    ros::Subscriber sub_isAvailableRear;
-    ros::Subscriber sub_isComplete;
-    ros::Subscriber sub_isReturned;
+    ros::Subscriber sub_waypointX;
+    ros::Subscriber sub_isFindSign;
+    ros::Subscriber sub_isAvailable;
     
-    std_msgs::Float32 heading;          // IMU heading
-    std_msgs::Float32 waypointY;        // waypoint
-    std_msgs::Bool isAvailableFront;    // 전면주차공간 찾음 & 주차 가능
-    std_msgs::Bool isAvailableRear;     // 후면주차공간 찾음 & 주차 가능
-    std_msgs::Bool isCompleteMsg;          // 주차 완료
-    std_msgs::Bool isReturnedMsg;          // 원래 주행차로 복귀
+    std_msgs::Float32 heading;        // IMU heading
+    std_msgs::Float32 waypointX;      // Camera waypointX
+    std_msgs::Bool isFindSign;        // Camera find parking sign
+    std_msgs::Bool isAvailable;       // Camera check is park available
     
     /* Subscriber Callback */
     void subIMUCallback(const std_msgs::Float32 &subIMUMsgs);
-    void subWaypointYCallback(const std_msgs::Float32 &subWaypointYMsgs);
-    void subParkingFrontCallback(const std_msgs::Bool &subParkingMsgs);
-    void subParkingRearCallback(const std_msgs::Bool &subParkingAreaMsgs);
-    void subCompleteCallback(const std_msgs::Bool &subEndParkingMsgs);
-    void subReturnedCallback(const std_msgs::Bool &subEndReverseMsgs);
+    void subWaypointXCallback(const std_msgs::Float32 &subWaypointXMsgs);
+    void subFindSignCallback(const std_msgs::Bool &subFindSignMsgs);
+    void subAvailableCallback(const std_msgs::Bool &subAvailableMsgs);
     
 public:
     
     void publish(int gear, int velocity, float steer);
-    bool isValidFront();
-    bool isValidRear();
-    bool isComplete();
-    bool isReturned();
+    float getHeading();
+    float getWayPointX();
+    bool isFindParkingSign();
+    bool isParkingAvailable();
 };

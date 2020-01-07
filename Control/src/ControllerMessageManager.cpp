@@ -12,42 +12,27 @@ ControllerMessageManager::ControllerMessageManager()
 
     // Subscriber : message 이름 수정필요, subscriber 추가/삭제 검토 필요
     sub_heading = node_.subscribe("/IMU/heading",1, &ParkingMessagePool::subIMUCallback, this);
-    sub_waypointY = node_.subscribe("/Camera/wayPointY",1, &ParkingMessagePool::subWaypointYCallback, this);
-    sub_isAvailableFront = node_.subscribe("/Camera/parkingFront",1, &ParkingMessagePool::subParkingFrontCallback, this);
-    sub_isAvailableRear = node_.subscribe("/Camera/traffic/parking",1, &ParkingMessagePool::subParkingRearCallback, this);
-    sub_isComplete = node_.subscribe("/Camera/endParking",1,&ParkingMessagePool::subEndParkingCallback, this);
-    sub_isReturned = node_.subscribe("/Camera/endReverse",1, &ParkingMessagePool::subEndReverseCallback, this);
+    sub_waypointX = node_.subscribe("/Camera/wayPointX",1, &ParkingMessagePool::subWaypointXCallback, this);
+    sub_isFindSign = node_.subscribe("/Camera/isFindSign",1, &ParkingMessagePool::subFindSignCallback, this);
+    sub_isAvailable = node_.subscribe("/Camera/isAvailable",1, &ParkingMessagePool::subAvailableCallback, this);
 }
 
 /* Subscriber Callback */
-void ControllerMessageManager::subIMUCallback(const std_msgs::Float32 &subIMUMsgs)
-{
+
+void ControllerMessageManager::subIMUCallback(const std_msgs::Float32 &subIMUMsgs) {
     heading = subIMUMsgs;
 }
 
-void ControllerMessageManager::subWaypointYCallback(const std_msgs::Float32 &subWaypointYMsgs)
-{
-    waypointY = subWaypointYMsgs;
+void ControllerMessageManager::subWaypointXCallback(const std_msgs::Float32 &subWaypointXMsgs) {
+    waypointX = subWaypointXMsgs;
 }
 
-void ControllerMessageManager::subParkingFrontCallback(const std_msgs::Bool &subParkingFrontMsgs)
-{
-    isAvailableFront = subParkingFrontMsgs;
+void ControllerMessageManager::subFindSignCallback(const std_msgs::Bool &subFindSignMsgs) {
+    isFindSign = subFindSignMsgs;
 }
 
-void ControllerMessageManager::subParkingRearCallback(const std_msgs::Bool &subParkingRearMsgs)
-{
-    isAvailableRear = subParkingRearMsgs;
-}
-
-void ControllerMessageManager::subCompleteCallback(const std_msgs::Bool &subCompleteCallbackMsgs)
-{
-    isComplete = subCompleteCallbackMsgs;
-}
-
-void ControllerMessageManager::subReturnedCallback(const std_msgs::Bool &subReturnedMsgs)
-{
-    isReturned = subReturnedMsgs;
+void ControllerMessageManager::subAvailableCallback(const std_msgs::Bool &subAvailableMsgs) {
+    isAvailable = subAvailableMsgs;
 }
 
 /* Public  */
@@ -65,18 +50,18 @@ void ControllerMessageManager::publish(int gear, int velocity, float steer) {
     pub_steer.publish(steer);
 }
 
-bool ControllerMessageManager::isValidFront() {
-    return isAvailableFront.data;
+float ControllerMessageManager::getWayPointX() {
+    return wayPointX;
 }
 
-bool ControllerMessageManager::isValidRear() {
-    return isAvailableRear.data;
+float ControllerMessageManager::getHeading() {
+    return heading;
 }
 
-bool ControllerMessageManager::isComplete() {
-    return isCompleteMsg.data;
+bool ControllerMessageManager::isFindParkingSign() {
+    return isFindSign;
 }
 
-bool ControllerMessageManager::isReturned() {
-    return isReturnedMsg.data;
+bool ControllerMessageManager::isParkingAvailable() {
+    return isAvailable;
 }
