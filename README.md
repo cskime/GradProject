@@ -11,7 +11,9 @@
 
 - IMU와 serial 통신을 통해 heading을 추출하여 Master에 publish
 
-<img src="design_imu.png" alt="IMU Class Design" width="70%">
+<p align="center">
+  <img src="design_imu.png" alt="IMU Class Design" width="70%">
+</p>
 
 ## Camera
 
@@ -20,14 +22,18 @@
 - SideCamera : 측면 카메라 이미지를 image processing하여 주차 표지판 및 주차 가능 구역을 검출하여 주차 가능 여부를 계산
 - FrontCamera : 정면 카메라 이미지를 image processing하여 wayPoint를 게산
 
-<img src="design_Camera.png" alt="Camera Class Design" width="70%">
+<p align="center">
+	<img src="design_Camera.png" alt="Camera Class Design" width="80%">
+</p>
 
 ## Controller
 
 - ControllerMessageManager : 자동차 자율 주행을 위한 IMU의 heading과 camera image processing을 통한 wayPoint 및 주차가능 여부 sign을 Master로부터 subscribe하여 Controller에 전달
 - Controller : IMU와 Camera로부터 subscribe한 데이터를 이용해서 자율 주차 시나리오에 맞는 동작을 구현
 
-<img src="design_Controller.png" alt="Controller Class Design" width="70%">
+<p align="center">
+	<img src="design_Controller.png" alt="Controller Class Design" width="70%">
+</p>
 
 ### State
 
@@ -47,6 +53,8 @@
   - PARKING : 주차 가능 구역을 발견하여 주차를 진행하는 상태
   - PARKED : 주차를 완료하여 잠시 정차해 있는 상태
   - RETURN : 후진으로 주차구역을 빠져나오는 상태, 다시 도로에 진입하면 SEARCH 상태로 회귀
-
-<img src="parking_state.png" alt="Parking State" width="45%">
+  - 
+<p align="center">
+	<img src="parking_state.png" alt="Parking State" width="45%">
+</p>
 
